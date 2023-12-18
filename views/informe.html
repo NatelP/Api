@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informes</title>
+    <style>
+        body{
+            background-color: #24292e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="width: 70%;margin: auto; margin-top: 3em;text-align: center;">
+        <div class="alert alert-info mt-2">
+          <h5>Informe de Empleados</h5>
+        </div>
+      </div>
+    <div style="width: 70%; margin:auto;">
+        <canvas id="myChart"></canvas>
+    </div>
+    <div style="width: 70%;margin: auto; margin-top: 3em;text-align: center;">
+        <form action="">
+            <a href="Lista-empleados.php"><button class="btn btn-primary" type="button">Regresar</button></a>
+        </form>
+      </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const contexto = document.querySelector("#myChart")
+        const grafico = new Chart(contexto, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Cantidad de empleados por sede',
+                    backgroundColor: ['#6bf1ab','#63d69f','#438c6c','#508c7f'],
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    data: [],
+                }]
+            },
+        });
+        (function(){
+        fetch('../controllers/Empleados.controller.php?operacion=getResumenTotalSedes')
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            grafico.data.labels = datos.map(registro =>registro.sede)
+            grafico.data.datasets[0].data = datos.map(registro=>registro.totalsedes)
+            grafico.update()
+        })
+        .catch(e => {
+            console.error(e)
+        })
+        }
+        )();
+    </script>
+</body>
+</html>
